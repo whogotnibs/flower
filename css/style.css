@@ -1,0 +1,93 @@
+body, html {
+  padding: 0;
+  margin: 0;
+}
+
+.start {
+  font-family: monospace;
+  padding: 20px;
+  padding-left: 10px;
+  padding-right:10px;
+  text-align: justify;
+  max-width: 300px;
+  color: white;
+  margin: auto;
+
+
+}
+
+.continue {
+  border-style: outset;
+  padding: 5px;
+  font-family: monospace;
+  margin: auto;
+  margin-top: 10px;
+  text-align: center;
+  width: 100px;
+  cursor: pointer;
+  background-color: white;
+  color: grey;
+}
+
+.continue:hover {
+  border-style: inset;
+  color: darkgrey;
+}
+
+.plant {
+  display: none;
+  padding: 100px;
+  margin: auto;
+  text-align: center;
+  width: 300px;
+}
+
+.health {
+  display: none;
+  padding: 5px;
+  margin: auto;
+  text-align: center;
+  width: 500px;
+}
+
+.water {
+  display: none;
+  border-style: outset;
+  padding: 5px;
+  font-family: monospace;
+  margin: auto;
+  margin-top: 10px;
+  text-align: center;
+  width: 100px;
+  cursor: pointer;
+  background-color: white;
+  color: grey;
+}
+
+.water:hover {
+  border-style: inset;
+  color: darkgrey;
+}
+
+.death {
+  display: none;
+  font-family: monospace;
+  padding: 20px;
+  margin: auto;
+  text-align: center;
+  width: 300px;
+}
+
+img {
+  max-width: 300px;
+  margin: auto;
+}
+
+.bg {
+  position: absolute;;
+  top: 240px;
+  width: 100%;
+  height: 70%;
+  background-color: #8E6C5D;
+  z-index: -99;
+}
