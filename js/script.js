@@ -30,29 +30,32 @@ $(document).ready(function() {
       display: 'block'
     });
 
-    // // when the water button is clicked the plants health will go up by +1
-    // $('.water').click(function(){
-    //   health++;
-    //
-    //   //the plants health maxs out at 5
-    //   if (health >= 5) {
-    //     health = 5;
-    //   }
-    // });
-    //
-    // setInterval(function(interval) {
-    //   health--;
-    //
-    //   //when the plant health reaches 0 the death message will be displayed
-    //   if (health <= 0) {
-    //     $('.plant, .health, .water').css({ 
-    //       display: 'none'
-    //     });
-    //     $('.death').css({ 
-    //       display: 'block'
-    //     });
-    //   }
-    // });
+    // when the water button is clicked the plants health will go up by +1
+    $('.water').click(function(){
+      health++;
+
+      //the plants health maxs out at 5
+      if (health >= 5) {
+        health = 5;
+      }
+      return health;
+    });
+
+    // every interval the plant's health will go down by -1
+    setInterval(function() {
+      health--;
+
+      //when the plant health reaches 0 the death message will be displayed
+      if (health <= 0) {
+        $('.plant, .health, .water').css({ 
+          display: 'none'
+        });
+        $('.death').css({ 
+          display: 'block'
+        });
+      }
+      return health;
+    },interval);
 
     // create an array to store our rectangles
     rectangles = new Array(TOTAL_HEALTH);
