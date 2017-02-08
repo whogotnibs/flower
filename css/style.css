@@ -43,10 +43,11 @@ body {
 
 .plant {
   display: none;
-  padding: 100px;
+  padding: 20px;
   margin: auto;
-  text-align: center;
-  width: 300px;
+  padding-left: 10px;
+  padding-right:10px;
+  max-width: 300px;
 }
 
 .health {
