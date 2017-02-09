@@ -14,7 +14,7 @@ const TOTAL_HEALTH = 5;
 var health = 3;
 //interval of health degeneration (milliseconds)
 var interval = 1000*10;
-var seenInstructions = false;
+var seenGame = false;
 var seenDeath = false;
 
 $(document).ready(function() {
@@ -23,9 +23,7 @@ $(document).ready(function() {
 
   setUpCheats();
 
-  instructions();
-
-  // death();
+  skip();
 
   // start function on click
   $('.continue').click(clickedContinue);
@@ -93,8 +91,9 @@ function setUpCheats() {
 
 //this makes it so that if the player has let the plant die they can only ever
 //see the death screen. u cant bring *this* flower back to life
-function death() {
+function skip() {
   seenDeath = localStorage.getItem('seenDeath');
+  seenGame = localStorage.getItem('seenGame');
   if (seenDeath = true) {
     console.log("Showing death...");
     seenDeath = true;
@@ -103,23 +102,26 @@ function death() {
     $('.plant, .health, .water').hide() ;
     $('.death').show();
   }
-}
-
-//this function lets the player skip the instructions if they have already started
-//the life of their flower
-function instructions() {
-  seenInstructions = localStorage.getItem('seenInstructions');
-  if (seenInstructions = true) {
-    // show the game's main divs
-    $('.plant, .health, .water').show() ;
+  //the player skips the instructions if they have already started
+  //the life of their flower
+  else if (seenGame = true) {
+    console.log("Showing game...");
+    seenGame = true;
+    // show the game screen
     $('.start, .continue').hide() ;
+    $('.plant, .health, .water').show() ;
+    $('.death').hide();
   }
+  //otherwise the game starts from the instruction screen
   else {
     console.log("Showing instructions...");
-    // show the instructions
+    // show the intro screen
     $('.start, .continue').show() ;
+    $('.plant, .health, .water').hide() ;
+    $('.death').hide();
   }
 }
+
 
 function clickedContinue() {
   // hide starting divs
@@ -133,8 +135,8 @@ function clickedContinue() {
   });
 
   //record that the user has already read the instructions
-  seenInstructions = true;
-  localStorage.setItem('seenInstructions', seenInstructions);
+  seenGame = true;
+  localStorage.setItem('seenGame', seenGame);
 }
 
 function clickedWater() {
