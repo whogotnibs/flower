@@ -94,7 +94,7 @@ function setUpCheats() {
 function skip() {
   seenDeath = localStorage.getItem('seenDeath');
   seenGame = localStorage.getItem('seenGame');
-  if (seenDeath = true) {
+  if (seenDeath == true) {
     console.log("Showing death...");
     seenDeath = true;
     // show the death screen
@@ -104,7 +104,7 @@ function skip() {
   }
   //the player skips the instructions if they have already started
   //the life of their flower
-  else if (seenGame = true) {
+  else if (seenGame == true) {
     console.log("Showing game...");
     seenGame = true;
     // show the game screen
@@ -120,6 +120,9 @@ function skip() {
     $('.plant, .health, .water').hide() ;
     $('.death').hide();
   }
+  localStorage.setItem('seenDeath', seenDeath);
+  localStorage.setItem('seenGame', seenGame);
+
 }
 
 

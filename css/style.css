@@ -5,7 +5,6 @@ body, html {
 
 body {
   background-color: #8E6C5D;
-
 }
 
 .start {
@@ -101,4 +100,10 @@ img {
   height: 240px;
   background-color: white;
   z-index: -1;
+}
+
+@media only screen and (max-device-width: 480px) {
+  body {
+    width: 400px;
+  }
 }
