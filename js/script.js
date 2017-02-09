@@ -13,13 +13,20 @@ var rectangles = [];
 const TOTAL_HEALTH = 5;
 var health = 3;
 //interval of health degeneration (milliseconds)
-var interval = 1000*10;
+const DEGENERATION_INTERVAL = 1000;
+const SAVE_TIME_INTERVAL = 1000;
+const DAY_IN_MILLIS = (1000*60*60*24);
+const DEATH_RATE = DAY_IN_MILLIS;
 var seenGame = false;
 var seenDeath = false;
+var degenerationTimer;
+var saveTimeTimer;
+var dateOfDeath;
 
 $(document).ready(function() {
-
   getHealth();
+
+  checkTime();
 
   setUpCheats();
 
@@ -32,8 +39,9 @@ $(document).ready(function() {
   $('.water').click(clickedWater);
 
   // every interval the plant's health will go down by -1
-  setInterval(degeneration, interval);
-
+  console.log("Starting timers");
+  degenerationTimer = setInterval(degeneration, DEGENERATION_INTERVAL);
+  saveTimeTimer = setInterval(saveTime, SAVE_TIME_INTERVAL);
   // making the health bar
   createRectangles();
 
@@ -47,7 +55,7 @@ $(document).ready(function() {
 
 function getHealth() {
   var storedHealth = localStorage.getItem("health");
-  health = parseInt(storedHealth);
+  health = parseFloat(storedHealth);
   if (isNaN(health)) {
     // If the value we got back from localStorage is NOT a number
     // we want to default to a value of 3 for our counter
@@ -92,11 +100,10 @@ function setUpCheats() {
 //this makes it so that if the player has let the plant die they can only ever
 //see the death screen. u cant bring *this* flower back to life
 function skip() {
-  seenDeath = localStorage.getItem('seenDeath');
-  seenGame = localStorage.getItem('seenGame');
-  if (seenDeath == true) {
+  var seenDeath = localStorage.getItem('seenDeath');
+  var seenGame = localStorage.getItem('seenGame');
+  if (seenDeath == 'true') {
     console.log("Showing death...");
-    seenDeath = true;
     // show the death screen
     $('.start, .continue').hide() ;
     $('.plant, .health, .water').hide() ;
@@ -104,9 +111,8 @@ function skip() {
   }
   //the player skips the instructions if they have already started
   //the life of their flower
-  else if (seenGame == true) {
+  else if (seenGame == 'true') {
     console.log("Showing game...");
-    seenGame = true;
     // show the game screen
     $('.start, .continue').hide() ;
     $('.plant, .health, .water').show() ;
@@ -122,7 +128,6 @@ function skip() {
   }
   localStorage.setItem('seenDeath', seenDeath);
   localStorage.setItem('seenGame', seenGame);
-
 }
 
 
@@ -138,39 +143,60 @@ function clickedContinue() {
   });
 
   //record that the user has already read the instructions
-  seenGame = true;
+  seenGame = 'true';
   localStorage.setItem('seenGame', seenGame);
 }
 
 function clickedWater() {
   health++;
 
+  updatePixelArt();
+
   //the plants health maxs out at 5
   if (health >= 5) {
     health = 5;
   }
   localStorage.setItem('health', health);
-  }
+}
 
 function degeneration() {
-  health--;
+  health -= DEGENERATION_INTERVAL / DEATH_RATE;//DAY_IN_MILLIS;
+
+  updatePixelArt();
+  $('.rectangle').remove();
+  createRectangles();
+  createRemainingRectangles();
+
+  console.log(health);
 
   //when the plant health reaches 0 the death message will be displayed
   if (health <= 0) {
-    health = 0;
-    seenDeath = true;
-    $('.start, .continue').css({ 
-      display: 'none'
-    });
-    $('.plant, .health, .water').css({ 
-      display: 'none'
-    });
-    $('.death').css({ 
-      display: 'block'
-    });
+    die()
   }
-  localStorage.setItem('health', health);
-  localStorage.setItem('seenDeath', seenDeath);
+    localStorage.setItem('health', health);
+    localStorage.setItem('seenDeath', seenDeath);
+}
+
+function die() {
+  health = 0;
+  seenDeath = 'true';
+
+  clearInterval(degenerationTimer);
+  clearInterval(saveTimeTimer);
+
+  $('.start, .continue').css({ 
+    display: 'none'
+  });
+  $('.plant, .health, .water').css({ 
+    display: 'none'
+  });
+  $('.death').css({ 
+    display: 'block'
+  });
+
+  // var date = new Date();
+  // dateOfDeath = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+  // $('.death').append(dateOfDeath)
 }
 
 function createRectangles() {
@@ -179,7 +205,7 @@ function createRectangles() {
 
   // loop through the (empty) array, putting rectangles in it
   // based on the plants health
-  for (var i = 0; i < health; i++) {
+  for (var i = 0; i < Math.ceil(health); i++) {
 
     // Make a rectangle
     var rect = rectangle(15, 15);
@@ -197,7 +223,7 @@ function createRectangles() {
 // Returns the div created as a jQuery object
 function rectangle (w, h) {
   // First we create the div that will be the rectangle using jQuery
-  var rect = $('<div></div>'); 
+  var rect = $('<div class="rectangle"></div>'); 
 
   // We can store properties in our rectangle object by just adding
   // them explicitly.
@@ -226,7 +252,7 @@ function createRemainingRectangles() {
 
   // loop through the (empty) array, putting rectangles in it
   // based on the plants lost health
-  for (var i = 0; i < (TOTAL_HEALTH - health); i++) {
+  for (var i = 0; i < (TOTAL_HEALTH - Math.ceil(health)); i++) {
 
     // Make a rectangle
     var emptyRect = emptyRectangle(15, 15);
@@ -239,7 +265,7 @@ function createRemainingRectangles() {
 
 function emptyRectangle (w, h) {
   // First we create the div that will be the rectangle using jQuery
-  var emptyRect = $('<div></div>'); 
+  var emptyRect = $('<div class="rectangle"></div>'); 
 
   // We can store properties in our rectangle object by just adding
   // them explicitly.
@@ -262,8 +288,37 @@ function emptyRectangle (w, h) {
 }
 
 function pixelArt() {
-  var imageSource = "images/plant" + health + ".png";
-  var image = $('<img src="' + imageSource + '">');
+  //using health to create the images source string
+  var imageSource = "images/plant" + Math.ceil(health) + ".png";
+  var image = $('<img id="plant_image" src="' + imageSource + '">');
   $('.plant').append(image);
 
+}
+
+
+function updatePixelArt() {
+  //using health to create the images source string
+  var imageSource = "images/plant" + Math.ceil(health) + ".png";
+  $('#plant_image').attr({
+    src: imageSource
+  })
+}
+
+
+function saveTime () {
+  localStorage.setItem('time', Date.now());
+}
+
+function checkTime () {
+  var storedTime = localStorage.getItem("time");
+  storedTime = parseInt(storedTime);
+  if (isNaN(storedTime)) {
+    // If the value we got back from localStorage is NOT a number
+    // we want to default to a value of 3 for our counter
+    storedTime = Date.now();
+  }
+  var elapsedTime = Date.now() - storedTime;
+  health -= (elapsedTime / DEGENERATION_INTERVAL / DEATH_RATE)
+
+  console.log('elapsed time:', elapsedTime)
 }
