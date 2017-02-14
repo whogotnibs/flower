@@ -318,7 +318,7 @@ function checkTime () {
     storedTime = Date.now();
   }
   var elapsedTime = Date.now() - storedTime;
-  health -= (elapsedTime / DEGENERATION_INTERVAL / DEATH_RATE)
+  health -= (elapsedTime / DEATH_RATE)
 
   console.log('elapsed time:', elapsedTime)
 }
