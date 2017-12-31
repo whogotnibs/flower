@@ -24,6 +24,7 @@ var saveTimeTimer;
 var dateOfDeath;
 
 $(document).ready(function() {
+  console.log("Cheat!");
   getHealth();
 
   checkTime();
@@ -279,7 +280,7 @@ function emptyRectangle (w, h) {
     width: emptyRect.w + 'px',
     height: emptyRect.h + 'px', 
     margin: '15px',
-    backgroundColor: 'lightgrey',
+    backgroundColor: '#aa7a79',
   }); 
 
   // Finally, we RETURN the div we created from the function
